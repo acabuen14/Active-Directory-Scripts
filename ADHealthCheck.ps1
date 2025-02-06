@@ -1,10 +1,11 @@
-# Define variables for log file path with dynamic date
+# Define variables for log file path with dynamic date and hostname
 $CurrentDate = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$LogFilePath = "C:\Active Directory Logs\AD_Health_Check_$CurrentDate.txt"
+$Hostname = $env:COMPUTERNAME
+$LogFilePath = "C:\Active Directory Logs\AD_Health_Check_${Hostname}_$CurrentDate.txt"
 
 # Create log directory if it doesn't exist
 if (!(Test-Path -Path "C:\Active Directory Logs")) {
-    New-Item -ItemType Directory -Path "C:\Active Directory Logs"
+    New-Item -ItemType Directory -Path "C:\Active Directory Logs" -Force
 }
 
 # Create log file with UTF-8 encoding if it doesn't exist
@@ -24,7 +25,7 @@ function Write-Log {
 }
 
 # Start logging
-Write-Log "Starting Active Directory Health Check..."
+Write-Log "Starting Active Directory Health Check on $Hostname..."
 
 # Run dcdiag with comprehensive diagnostics
 Write-Log "Running dcdiag with /c /v options..."
@@ -54,5 +55,5 @@ try {
 }
 
 # Script completion
-Write-Log "Active Directory Health Check completed."
+Write-Log "Active Directory Health Check completed on $Hostname."
 Write-Log "Please review the log file at $LogFilePath for details."
